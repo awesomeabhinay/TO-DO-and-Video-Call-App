@@ -1,0 +1,56 @@
+<div class="container-fluid">
+    <ng-template #content let-c="close" let-d="dismiss">
+        <form method="POST" [formGroup] ="formgroup"
+                name="todoForm"
+                class="form-horizontal"
+                (submit)="onAddNewTask(); c('s')">
+            <div class="modal-header form-group">
+                <input class="modal-title form-control" id="title" type="text" placeholder="Title" formControlName="title" required/>
+
+                <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body form-group">
+                <textarea class="form-control lg-textarea" id="detail" rows="6" formControlName="detail" required></textarea>
+            </div>
+            <div class="modal-footer form-actions">
+                <button type="submit" class="btn btn-outline-dark">Save</button>
+            </div>
+        </form>
+    </ng-template>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <button class="btn btn-outline-primary float-right mt-2 ml-2" (click)="open(content)">New Task</button>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-9">
+            <ngb-accordion class=""
+             #acc="ngbAccordion" 
+             activeIds="ngb-panel-0"
+             *ngFor="let todo of todoList;let i=index">
+                <ngb-panel class="mt-1">
+                    <ng-template ngbPanelTitle>
+                        <span>&#9733; <b>{{todo.title | uppercase}}</b> &#9733; 
+                            &nbsp;
+                        </span>
+                        <button class="btn btn-danger float-right"
+                                type="button"
+                                (click)="onDeleteTodo(i)"
+                                ngbPopover="Delete this Task" 
+                                triggers="mouseenter:mouseleave"
+                                placement="right"> X </button>
+                    </ng-template>
+                    <ng-template ngbPanelContent>
+                        {{todo.detail | titlecase }}
+                    </ng-template>
+                </ngb-panel>
+            </ngb-accordion>
+        </div>
+    </div>
+        
+</div>

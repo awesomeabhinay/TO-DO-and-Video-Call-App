@@ -1,0 +1,58 @@
+<div class="container">
+ <!-- <div class="alert alert-danger" role="alert" ng-if="errorMessage">
+  errorMessage
+ </div> -->
+ <div class="panel panel-default mt-2">
+  <div class="alert alert-success">
+   <span class="lead">Login User</span>
+   </div>
+  <div class="panel-body ">
+   <div class="container">
+        <form method= "POST"  
+                [formGroup] = "formgroup"
+                name="myForm"
+                class="form-horizontal"
+                (submit)="loginForm()" 
+                >
+        
+        <div class="row">
+              <div class="form-group col-md-12">
+                <label class="col-md-2 control-lable" for="email">
+                      Email
+                </label>
+                <div class="col-md-7">
+                      <input type="email"
+                              id="email" class="form-control input-sm"
+                              placeholder="Enter User Email"
+                              formControlName="email" required/>
+                </div>
+              </div>
+        </div>
+        <div class="row">
+              <div class="form-group col-md-12">
+                <label class="col-md-2 control-lable" for="password">
+                      Password
+                </label>
+                <div class="col-md-7">
+                      <input type="password"
+                              id="password" class="form-control input-sm"
+                              placeholder="Enter User password."
+                              formControlName="password" required/>
+                </div>
+              </div>
+        </div>
+        <div class="row">
+              <div class="form-actions floatRight">
+                      <button type="submit"
+                              class="btn btn-primary btn-sm ml-4 mr-2">
+                            Login
+                            </button>
+                      <button type="button" (click)="resetForm()"
+                              class="btn btn-warning btn-sm">Reset Form</button>
+              </div>
+        </div>
+      </form>
+   </div>
+  </div>
+ </div>
+</div>

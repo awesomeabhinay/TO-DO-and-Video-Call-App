@@ -1,0 +1,12 @@
+<hr>
+<div class="container-fluid">
+    <p *ngIf="authService.isAuthenticated()">
+        <ngb-alert type="custom" [dismissible]="false"><strong>Whoa! {{user.name | uppercase}}</strong> You successfully logged in now you can add your
+            <a routerLink="/todo"><strong>TO-DO</strong></a> list or your <a routerLink="/accounts"><strong>Accounts</strong></a>.
+        </ngb-alert>
+    </p>
+    <p *ngIf="!authService.isAuthenticated()">
+        <ngb-alert type="custom" [dismissible]="false"><strong>PLEASE Login</strong> or <strong>Register</strong> first to access the services. 
+        </ngb-alert>
+    </p>
+</div>
