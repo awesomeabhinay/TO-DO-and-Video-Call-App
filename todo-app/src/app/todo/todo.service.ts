@@ -17,4 +17,13 @@ export class TodoService {
     console.log(data);
     return this.http.delete<Todo>(this.todoUrl + '/' + data.id);
   }
+
+  fetchUserTodo(user): Observable<Todo[]> {
+    return this.http.get<Todo[]>(this.todoUrl + '/' + user.id);
+  }
+
+  addNewTodo(todoData): Observable<Todo> {
+    console.log(todoData);
+    return this.http.post<Todo>(this.todoUrl, todoData);
+  }
 }

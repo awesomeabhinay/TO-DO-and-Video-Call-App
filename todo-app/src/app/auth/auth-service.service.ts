@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { User } from '../Model/user/user.model';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import {map, catchError} from 'rxjs/operators';
 import { Todo } from '../Model/todo/todo.model';
 
 @Injectable({
@@ -33,16 +34,9 @@ export class AuthServiceService {
   }
 
   register(form): Observable<User>{
-    return this.http.post<User>(this.userUrl + '/register', form);
-  }
-
-  addNewTodo(todoData): Observable<Todo>{
-    console.log(todoData);
-    return this.http.post<Todo>(this.todoUrl, todoData);
-  }
-
-  fetchUserTodo(user): Observable<Todo[]>{
-    return this.http.get<Todo[]>(this.todoUrl + '/' + user.id);
+    return this.http.post<User>(this.userUrl + '/register', form).pipe(
+      catchError(this.handleError)
+    );
   }
 
   sendUserData(){
@@ -54,10 +48,30 @@ export class AuthServiceService {
     this.userData = userData;
   }
 
+  verifyOtp(otp, user): Observable<User>{
+    console.log(otp);
+    return this.http.post<User>(this.userUrl + '/' + otp.otp, user).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   toggleToken(){
     this.token = (this.token === 'loggedin') ? 'loggedout' : 'loggedin';
   }
   getToken(){
     return this.token;
+  }
+
+  handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Unknown error!';
+    if (error.error instanceof ErrorEvent) {
+      // Client-side errors
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Server-side errors
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    window.alert(errorMessage);
+    return throwError(errorMessage);
   }
 }

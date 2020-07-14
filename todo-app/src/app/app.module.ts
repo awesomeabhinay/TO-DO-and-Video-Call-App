@@ -20,6 +20,7 @@ import { AuthGuard } from './auth/auth-guard.service';
 import { TodoComponent } from './todo/todo.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { TodoService } from './todo/todo.service';
+import { AccountsService } from './accounts/accounts.service';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,7 @@ import { TodoService } from './todo/todo.service';
     MatToolbarModule,
     MatCheckboxModule
   ],
-  providers: [AuthServiceService, AuthGuard, TodoService],
+  providers: [AuthServiceService, AuthGuard, TodoService, AccountsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

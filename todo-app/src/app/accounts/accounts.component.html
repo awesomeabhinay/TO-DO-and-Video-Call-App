@@ -1,1 +1,68 @@
-<p>accounts works!</p>
+<div class="container-fluid">
+    <ng-template #content let-c="close" let-d="dismiss">
+        <form method="POST" [formGroup] ="formgroup"
+                name="accountForm"
+                class="form-horizontal"
+                (submit)="onAddNewTask(); c('s')">
+            <div class="modal-header form-group">
+                <input class="modal-title form-control" id="name" type="text" placeholder="Account Type" formControlName="name" required/>
+
+                <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body form-group">
+                <input class="form-control" id="username" type="text" placeholder="Username" formControlName="username" required><br>
+                <div class="row">
+                    <div class="col-sm-10">
+                        <input class="form-control" id="password" matInput [type]="hide1 ? 'password' : 'text'" placeholder="Password" formControlName="password" required>
+                    </div>
+                    <div class="col-sm-1">
+                        <mat-icon matSuffix (click)="hide1 = !hide1">{{hide1 ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer form-actions">
+                <button type="submit" class="btn btn-outline-dark">Save</button>
+            </div>
+        </form>
+    </ng-template>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <button class="btn btn-outline-primary float-right mt-2 ml-2" (click)="open(content)">New Account</button>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-9">
+            <ngb-accordion class=""
+             #acc="ngbAccordion" 
+             activeIds="ngb-panel-0"
+             *ngFor="let account of accountList;let i=index">
+                <ngb-panel class="mt-1">
+                    <ng-template ngbPanelTitle>
+                        <span>&#9733; <b>{{account.name | uppercase}}</b> &#9733; 
+                            &nbsp;
+                        </span>
+                        <button class="btn btn-danger float-right"
+                                type="button"
+                                (click)="onDeleteAccount(i)"
+                                ngbPopover="Delete this Task" 
+                                triggers="mouseenter:mouseleave"
+                                placement="right"> X </button>
+                    </ng-template>
+                    <ng-template ngbPanelContent>
+                        <p><b>{{account.username}}</b></p>
+                        <hr>
+                        <p *ngIf="!hide">{{account.password}}</p>
+                        <p *ngIf="hide">Password Hidden</p>
+                        <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </ng-template>
+                </ngb-panel>
+            </ngb-accordion>
+        </div>
+    </div>
+        
+</div>

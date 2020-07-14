@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.darkshadow.app.dto.UsersDTO;
 import com.darkshadow.app.exception.CustomErrors;
 import com.darkshadow.app.repo.UserJpaRepository;
+import com.darkshadow.app.service.UserEmailService;
 
 @RestController
 @Component
@@ -28,6 +30,7 @@ public class UserRestController {
 
 	public static final Logger logger = LoggerFactory.getLogger(UserRestController.class);
 
+	private UsersDTO user;
 	@RequestMapping("/hello")
 	public String hello() {
 		return "hello";
@@ -35,6 +38,9 @@ public class UserRestController {
 	
 	@Autowired
 	private UserJpaRepository userJpaRepository;
+	
+	@Autowired
+	private UserEmailService emailService;
 	
 	@GetMapping("/")
 	public ResponseEntity<List<UsersDTO>> getAllUser(){
@@ -50,7 +56,9 @@ public class UserRestController {
 			logger.error("Email {} already exist",user.getEmail());
 			return new ResponseEntity<UsersDTO>(new CustomErrors("User already exist"),HttpStatus.CONFLICT);
 		}
-		userJpaRepository.save(user);
+		emailService.sendMail(user.getEmail(),user.getName());
+		//userJpaRepository.save(user);
+		this.user = user;
 		return new ResponseEntity<UsersDTO>(user, HttpStatus.CREATED);
 	}
 	
@@ -65,7 +73,16 @@ public class UserRestController {
 		return new ResponseEntity<UsersDTO>(u,HttpStatus.ACCEPTED);
 	}
 	
-	
-	
+	@CrossOrigin(origins = "http://localhost:4200")
+	@PostMapping(value = "/{otp}", consumes = MediaType.ALL_VALUE)
+	public ResponseEntity<UsersDTO> verifyOtp(@PathVariable("otp") String otp, @RequestBody UsersDTO user){
+		
+		if(otp.equals(emailService.getOtp())) {
+			System.out.println(otp);
+			userJpaRepository.save(this.user);
+			return new ResponseEntity<UsersDTO>(user,HttpStatus.OK);
+		}
+		return new ResponseEntity<UsersDTO>(HttpStatus.BAD_REQUEST);
+	}
 	
 }

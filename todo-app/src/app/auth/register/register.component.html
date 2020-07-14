@@ -54,10 +54,11 @@
                   </div>
                 </div>
           </div>
+          
           <div class="row">
                 <div class="form-actions floatRight">
                         <button type="submit"
-                                class="btn btn-primary btn-sm mr-2">
+                                class="btn btn-primary btn-sm ml-4 mr-2">
                               Register User
                               </button>
                         <button type="button" (click)="resetForm()"
@@ -65,6 +66,26 @@
                 </div>
           </div>
         </form>
+        <hr>
+        <form method="POST"
+                  [formGroup] = "otp"
+                  name="myForm"
+                  class="form-horizontal"
+                  (submit)="onVerifyOtp()">
+            <div class="row" *ngIf="regBtnClicked">
+                  <div class="form-group col-md-5 float-left">
+                  <input type="text"
+                              id = "otp" class="form-control col-sm-7 input-sm"
+                              placeholder="Enter Otp"
+                              formControlName="otp" required>
+                  </div>
+                  <div class="col-md-2 form-actions">
+                  <button type="submit"
+                              class="btn btn-outline-success btn-sm ml-2">Verify</button>
+                  </div>
+            </div>
+        </form>
+        
    </div>
   </div>
  </div>

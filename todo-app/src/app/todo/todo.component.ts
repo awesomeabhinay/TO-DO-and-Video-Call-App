@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgbModal, NgbAccordionConfig } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { AuthServiceService } from '../auth/auth-service.service';
@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './todo.component.html',
   styleUrls: ['./todo.component.css']
 })
-export class TodoComponent implements OnInit {
+export class TodoComponent implements OnInit, OnDestroy {
   formgroup: FormGroup;
   todoData: Todo = new Todo();
   user_id: string = localStorage.getItem('id');
@@ -25,9 +25,9 @@ export class TodoComponent implements OnInit {
   todoChanged = new Subject<Todo[]>();
   subscription: Subscription;
   user: User = new User(this.user_id, this.user_name, this.user_email);
-  constructor(private modalService: NgbModal, private config: NgbAccordionConfig,
+  constructor(private modalService: NgbModal, config: NgbAccordionConfig,
               public authService: AuthServiceService, private todoService: TodoService, private router: Router,
-              private route: ActivatedRoute, private http: HttpClient) {
+              private route: ActivatedRoute) {
 
     config.closeOthers = true;
   }
@@ -39,7 +39,7 @@ export class TodoComponent implements OnInit {
     }
     else{
         console.log(this.user);
-        this.authService.fetchUserTodo(this.user).subscribe(result => {
+        this.todoService.fetchUserTodo(this.user).subscribe(result => {
           this.todoList = result;
           this.subscription = this.todoChanged.subscribe(
             (list: Todo[]) => {
@@ -72,7 +72,7 @@ export class TodoComponent implements OnInit {
       console.log('yaha');
       console.log(this.user);
       console.log(this.formgroup.value);
-      this.authService.addNewTodo(this.formgroup.value).subscribe(result => {
+      this.todoService.addNewTodo(this.formgroup.value).subscribe(result => {
         this.todoList.push(result);
         this.subscription = this.todoChanged.subscribe(
           (list: Todo[]) => {
@@ -87,16 +87,18 @@ export class TodoComponent implements OnInit {
   onDeleteTodo(index){
     this.todoData = this.todoList[index];
     this.todoList.splice(index, 1);
-    this.todoChanged.subscribe(list => {
+    this.subscription = this.todoChanged.subscribe(list => {
       this.todoList = list;
     });
     console.log(this.todoData);
-    const url = 'http://localhost:8080/todo/';
-    //return this.http.delete<Todo>(url + this.todoData.id).subscribe();
     this.todoService.deleteTodoByIndex(this.todoData).subscribe();
   }
 
   resetForm() {
     this.formgroup.reset();
+  }
+
+  ngOnDestroy(): void {
+    //this.subscription.unsubscribe();
   }
 }
