@@ -4,6 +4,7 @@ import { AuthServiceService } from '../auth-service.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { User } from 'src/app/Model/user/user.model';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -12,6 +13,8 @@ import { User } from 'src/app/Model/user/user.model';
 })
 export class LoginComponent implements OnInit {
   user: User;
+  submitted = false;
+  userChanged = new Subject<User>();
   formgroup: FormGroup;
   constructor(public authService: AuthServiceService,
               private modalService: NgbModal,
@@ -24,29 +27,34 @@ export class LoginComponent implements OnInit {
   }
   initForm() {
     this.formgroup = new FormGroup({
-      email: new FormControl('', [Validators.required]),
-      password: new FormControl('', [Validators.required])
+      email: new FormControl('', [Validators.required, Validators.email, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]),
+      password: new FormControl('', [Validators.required, Validators.minLength(6)])
     });
   }
 
   loginForm() {
+    this.submitted = true;
     console.log('inside submit');
     if (this.formgroup.valid) {
       this.authService.login(this.formgroup.value).subscribe(result => {
-        this.user = result;
-        localStorage.setItem('name', this.user.name);
-        localStorage.setItem('email', this.user.email);
-        localStorage.setItem('id', this.user.id);
+        if (this.authService.getError() !== 'no user'){
+          this.user = result;
+          this.userChanged.subscribe(u => this.user = u);
+          localStorage.setItem('name', this.user.name);
+          localStorage.setItem('email', this.user.email);
+          localStorage.setItem('id', this.user.id);
+          this.authService.toggleToken();
+          localStorage.setItem('token', this.authService.getToken());
+          console.log(localStorage.getItem('token'));
+          this.resetForm();
+          this.router.navigate(['/home'], { relativeTo: this.route });
+        }
         //this.authService.recieveUserData(this.user);
       });
-      this.authService.toggleToken();
-      localStorage.setItem('token', this.authService.getToken());
-      console.log(localStorage.getItem('token'));
-      this.resetForm();
-      this.router.navigate(['/home'], {relativeTo: this.route});
     }
     else {
-      alert('Fill required detail!');
+      return;
+     // alert('Fill required detail!');
     }
   }
 
@@ -57,5 +65,7 @@ export class LoginComponent implements OnInit {
     this.modalService.open(content, { centered: true, size: 'lg', });
   }
 
+  // convenience getter for easy access to form fields
+  get f() { return this.formgroup.controls; }
 
 }

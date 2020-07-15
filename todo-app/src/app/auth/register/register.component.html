@@ -24,7 +24,11 @@
                         <input type="text"
                                 id="name" class="form-control input-sm"
                                 placeholder="Enter user name"
+                                [ngClass]="{ 'is-invalid': submitted && f.name.errors }"
                                 formControlName="name" required/>
+                        <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                            <div *ngIf="f.name.errors.required">First Name is required</div>
+                        </div>
                  </div>
                 </div>
           </div>
@@ -37,7 +41,12 @@
                         <input type="email"
                                 id="email" class="form-control input-sm"
                                 placeholder="Enter User Email"
+                                [ngClass]="{ 'is-invalid': submitted && f.email.errors }"
                                 formControlName="email" required/>
+                        <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                            <div *ngIf="f.email.errors.required">Email is required</div>
+                            <div *ngIf="f.email.errors.email">Email must be a valid email address</div>
+                        </div>
                   </div>
                 </div>
           </div>
@@ -50,7 +59,13 @@
                         <input type="password"
                                 id="password" class="form-control input-sm"
                                 placeholder="Enter User password."
+                                [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
                                 formControlName="password" required/>
+                        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                            <div *ngIf="f.password.errors.required">Password is required</div>
+                            <div *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div>
+                            <!-- <div *ngIf="f.password.errors.pattern">Password must contain one lowercase, one uppercase,one digit and one special charchter.</div> -->
+                        </div>
                   </div>
                 </div>
           </div>

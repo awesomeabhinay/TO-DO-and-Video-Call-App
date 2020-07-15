@@ -30,12 +30,14 @@ export class AuthServiceService {
   }
 
   login(form): Observable<User>{
-    return this.http.post<User>(this.userUrl + '/login', form);
+    return this.http.post<User>(this.userUrl + '/login', form).pipe(
+      catchError(this.handleLoginError)
+    );
   }
 
   register(form): Observable<User>{
     return this.http.post<User>(this.userUrl + '/register', form).pipe(
-      catchError(this.handleError)
+      catchError(this.handleRegisterError)
     );
   }
 
@@ -51,7 +53,7 @@ export class AuthServiceService {
   verifyOtp(otp, user): Observable<User>{
     console.log(otp);
     return this.http.post<User>(this.userUrl + '/' + otp.otp, user).pipe(
-      catchError(this.handleError)
+      catchError(this.handleOtpError)
     );
   }
 
@@ -62,16 +64,48 @@ export class AuthServiceService {
     return this.token;
   }
 
-  handleError(error: HttpErrorResponse) {
+  handleOtpError(error: HttpErrorResponse) {
     let errorMessage = 'Unknown error!';
     if (error.error instanceof ErrorEvent) {
       // Client-side errors
       errorMessage = `Error: ${error.error.message}`;
     } else {
       // Server-side errors
-      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+      this.error = 'otp invalid';
+      errorMessage = `Otp is not valid. Please enter valid OTP`;
     }
     window.alert(errorMessage);
     return throwError(errorMessage);
+  }
+
+  handleRegisterError(error: HttpErrorResponse) {
+    let errorMessage = 'Unknown error!';
+    if (error.error instanceof ErrorEvent) {
+      // Client-side errors
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Server-side errors
+      this.error = 'email error';
+      errorMessage = `Email already exist`;
+    }
+    window.alert(errorMessage);
+    return throwError(errorMessage);
+  }
+
+  handleLoginError(error: HttpErrorResponse) {
+    let errorMessage = 'Unknown error!';
+    if (error.error instanceof ErrorEvent) {
+      // Client-side errors
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Server-side errors
+      this.error = 'no user';
+      errorMessage = `You have not registered yet`;
+    }
+    window.alert(errorMessage);
+    return throwError(errorMessage);
+  }
+  public getError(){
+    return this.error;
   }
 }

@@ -27,7 +27,7 @@
                 type="button" routerLink="/login">Login</button>
       </ng-template>
       <form class="form-inline my-2 my-lg-0" *ngIf = "auth.isAuthenticated()">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search User" aria-label="Search">
         <button class="btn btn-outline-success my-2 my-sm-0" type="button">Search</button>
       </form>
       <button class="btn btn-outline-danger my-2 my-sm-0 ml-2" routerLink="/home" type="button" (click)="onLogout()" *ngIf="auth.isAuthenticated()">Logout</button>

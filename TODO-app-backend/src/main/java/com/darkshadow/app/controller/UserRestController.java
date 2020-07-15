@@ -67,7 +67,7 @@ public class UserRestController {
 	public ResponseEntity<UsersDTO> login(@Valid @RequestBody UsersDTO user){
 		if(userJpaRepository.findByEmail(user.getEmail())== null) {
 			logger.error("user not found");
-			return new ResponseEntity<UsersDTO>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<UsersDTO>(new CustomErrors("User Not Found"),HttpStatus.NOT_FOUND);
 		}
 		UsersDTO u = userJpaRepository.findByEmail(user.getEmail());
 		return new ResponseEntity<UsersDTO>(u,HttpStatus.ACCEPTED);
