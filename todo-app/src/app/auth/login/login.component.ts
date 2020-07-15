@@ -16,6 +16,8 @@ export class LoginComponent implements OnInit {
   submitted = false;
   userChanged = new Subject<User>();
   formgroup: FormGroup;
+  retrievedImage: any;
+  retrieveRes: any;
   constructor(public authService: AuthServiceService,
               private modalService: NgbModal,
               private router: Router,
@@ -40,9 +42,16 @@ export class LoginComponent implements OnInit {
         if (this.authService.getError() !== 'no user'){
           this.user = result;
           this.userChanged.subscribe(u => this.user = u);
+          console.log(this.user);
           localStorage.setItem('name', this.user.name);
           localStorage.setItem('email', this.user.email);
           localStorage.setItem('id', this.user.id);
+          
+          // this.retrieveRes = result;
+          // //console.log(this.retrieveRes.picByte);
+          // this.retrievedImage = `data:image/(png|jpg|jpeg);base64,${this.retrieveRes.picByte}`;
+          // //console.log(this.retrievedImage);
+          // localStorage.setItem('pic', this.retrievedImage);
           this.authService.toggleToken();
           localStorage.setItem('token', this.authService.getToken());
           console.log(localStorage.getItem('token'));

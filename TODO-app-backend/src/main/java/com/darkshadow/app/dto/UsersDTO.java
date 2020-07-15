@@ -1,5 +1,7 @@
 package com.darkshadow.app.dto;
 
+import java.util.Arrays;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +14,13 @@ import org.hibernate.validator.constraints.Length;
 @Table(name = "users")
 public class UsersDTO {
 	
+	public UsersDTO() {
+		super();
+	}
+	
+	public UsersDTO(byte[] pic) {
+		this.picByte = pic;
+	}
 	@Id
 	@GeneratedValue
 	@Column(name = "user_id")
@@ -28,6 +37,9 @@ public class UsersDTO {
 	@Length(max = 100)
 	@Column(name = "password")
 	private String password;
+	
+	@Column(name = "user_pic", length = 100000)
+	private byte[] picByte;
 	
 	public long getId() {
 		return id;
@@ -53,10 +65,18 @@ public class UsersDTO {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
+	public byte[] getPicByte() {
+		return picByte;
+	}
+	public void setPicByte(byte[] picByte) {
+		this.picByte = picByte;
+	}
 	@Override
 	public String toString() {
-		return "UsersDTO [id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + "]";
+		return "UsersDTO [id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + ", picByte="
+				+ Arrays.toString(picByte) + "]";
 	}
+	
 	
 }

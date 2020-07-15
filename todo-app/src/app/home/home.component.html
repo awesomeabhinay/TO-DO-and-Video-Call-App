@@ -1,12 +1,57 @@
 <hr>
 <div class="container-fluid">
-    <p *ngIf="authService.isAuthenticated()">
-        <ngb-alert type="custom" [dismissible]="false"><strong>Whoa! {{user.name | uppercase}}</strong> You successfully logged in now you can add your
-            <a routerLink="/todo"><strong>TO-DO</strong></a> list or your <a routerLink="/accounts"><strong>Accounts</strong></a>.
-        </ngb-alert>
-    </p>
-    <p *ngIf="!authService.isAuthenticated()">
+    <div class="row">
+        <div class="col-sm-2 ml-3" *ngIf="!imageUploaded && authService.isAuthenticated()" >
+            <img src="../../assets/images/default-user.png" style="width: 150px; height: 150px;">
+            <div class="row">
+                <div class="ml-2 col-sm-7">
+                    <input type="file" (change) = onFileChanged($event)>
+                </div>
+            </div>
+            <div class="col-sm-3 mt-1">
+                <button class="btn btn-outline-primary" type="button" (click)="onUpload()"> Upload</button>
+            </div>
+        </div>
+        
+        <div class="col-sm-9">
+            <div *ngIf="authService.isAuthenticated()">
+                <ngb-alert type="custom" [dismissible]="false"><strong>Whoa! {{user.name | uppercase}}</strong> You successfully logged in now you can add your
+                    <a routerLink="/todo"><strong>TO-DO</strong></a> list or your <a routerLink="/accounts"><strong>Accounts</strong></a>.
+                </ngb-alert>
+            </div>
+        </div>
+        <div class="col-sm-3 centered text-center float-right" *ngIf="imageUploaded && authService.isAuthenticated()">
+            <a (click)="openWindowCustomClass(content)" style="cursor: pointer;">
+                <img [src] ="domSan.bypassSecurityTrustResourceUrl(pic)" 
+                    alt="{{user.name}}" 
+                    style="max-width: 150px; max-height: 150px; border-radius: 10%;"
+                    ngbPopover="View" 
+                    triggers="mouseenter:mouseleave"
+                    placement="right">
+            </a>
+            <br><p><strong class="centered" id="name">Hello, {{user.name | uppercase}}</strong></p>
+        </div>
+    </div>
+    <div *ngIf="!authService.isAuthenticated()">
         <ngb-alert type="custom" [dismissible]="false"><strong>PLEASE Login</strong> or <strong>Register</strong> first to access the services. 
         </ngb-alert>
-    </p>
+    </div>
+
+    <ng-template class="modal fade" #content let-modal>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img class="img-responsive" [src] ="domSan.bypassSecurityTrustResourceUrl(pic)" alt="{{user.name}}" style="max-width: 400px; max-height: 400px;">
+                </div>
+            </div>
+        </div>
+            <!-- <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button> -->
+            
+    </ng-template>
+
+
 </div>
+
+
