@@ -71,6 +71,7 @@ export class TodoComponent implements OnInit, OnDestroy {
       //               'user': user};
       console.log('yaha');
       console.log(this.user);
+      this.formgroup.value.user = this.user;
       console.log(this.formgroup.value);
       this.todoService.addNewTodo(this.formgroup.value).subscribe(result => {
         this.todoList.push(result);

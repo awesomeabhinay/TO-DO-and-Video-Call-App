@@ -38,9 +38,20 @@ public class UsersDTO {
 	@Column(name = "password")
 	private String password;
 	
-	@Column(name = "user_pic", length = 100000)
+	@Column(name = "user_pic", length = 10000000)
 	private byte[] picByte;
 	
+	@Column(name = "about", length = 10000)
+	private String about;
+	
+	public String getAbout() {
+		return about;
+	}
+
+	public void setAbout(String about) {
+		this.about = about;
+	}
+
 	public long getId() {
 		return id;
 	}
@@ -72,11 +83,13 @@ public class UsersDTO {
 	public void setPicByte(byte[] picByte) {
 		this.picByte = picByte;
 	}
+
 	@Override
 	public String toString() {
 		return "UsersDTO [id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + ", picByte="
-				+ Arrays.toString(picByte) + "]";
+				+ Arrays.toString(picByte) + ", about=" + about + "]";
 	}
+	
 	
 	
 }

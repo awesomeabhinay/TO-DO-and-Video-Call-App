@@ -1,57 +1,89 @@
 <hr>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-2 ml-3" *ngIf="!imageUploaded && authService.isAuthenticated()" >
-            <img src="../../assets/images/default-user.png" style="width: 150px; height: 150px;">
-            <div class="row">
-                <div class="ml-2 col-sm-7">
-                    <input type="file" (change) = onFileChanged($event)>
+<header *ngIf="authService.isAuthenticated()" class="jumbotron jumbotron-fluid">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-9" *ngIf="!aboutYouUploaded">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <button class="btn btn-outline-success" (click) = "open(aboutYou)">Add About You</button>
+                    </div>
+                    <ng-template #aboutYou let-c="close" let-d="dismiss">
+                        <form method="POST" [formGroup] ="formgroup"
+                                name="aboutYouForm"
+                                class="form-horizontal"
+                                (submit)="onAboutYouUpload(); c('s')">
+                            <div class="modal-header form-group">
+                                <h4 class="modal-title" id="about" required>
+                                    <b>About You</b>
+                                </h4>
+
+                                <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body form-group">
+                                <textarea class="form-control lg-textarea" id="about" rows="6" formControlName="about" required></textarea>
+                            </div>
+                            <div class="modal-footer form-actions">
+                                <button type="submit" class="btn btn-outline-dark">Save</button>
+                            </div>
+                        </form>
+                    </ng-template>
                 </div>
             </div>
-            <div class="col-sm-3 mt-1">
-                <button class="btn btn-outline-primary" type="button" (click)="onUpload()"> Upload</button>
+            <div style="padding-top: 50px;" class="col-sm-9" *ngIf="aboutYouUploaded">
+                <h2 class="text-center centered">"{{user.about | uppercase}}"</h2>
             </div>
-        </div>
-        
-        <div class="col-sm-9">
-            <div *ngIf="authService.isAuthenticated()">
-                <ngb-alert type="custom" [dismissible]="false"><strong>Whoa! {{user.name | uppercase}}</strong> You successfully logged in now you can add your
-                    <a routerLink="/todo"><strong>TO-DO</strong></a> list or your <a routerLink="/accounts"><strong>Accounts</strong></a>.
-                </ngb-alert>
-            </div>
-        </div>
-        <div class="col-sm-3 centered text-center float-right" *ngIf="imageUploaded && authService.isAuthenticated()">
-            <a (click)="openWindowCustomClass(content)" style="cursor: pointer;">
-                <img [src] ="domSan.bypassSecurityTrustResourceUrl(pic)" 
-                    alt="{{user.name}}" 
-                    style="max-width: 150px; max-height: 150px; border-radius: 10%;"
-                    ngbPopover="View" 
-                    triggers="mouseenter:mouseleave"
-                    placement="right">
-            </a>
-            <br><p><strong class="centered" id="name">Hello, {{user.name | uppercase}}</strong></p>
-        </div>
-    </div>
-    <div *ngIf="!authService.isAuthenticated()">
-        <ngb-alert type="custom" [dismissible]="false"><strong>PLEASE Login</strong> or <strong>Register</strong> first to access the services. 
-        </ngb-alert>
-    </div>
-
-    <ng-template class="modal fade" #content let-modal>
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <img class="img-responsive" [src] ="domSan.bypassSecurityTrustResourceUrl(pic)" alt="{{user.name}}" style="max-width: 400px; max-height: 400px;">
+            <div class="col-sm-2 ml-3 centered text-center float-right" *ngIf="!imageUploaded && authService.isAuthenticated()" >
+                <img src="../../assets/images/default-user.png" style="width: 150px; height: 150px;">
+                <div class="row">
+                    <div class="ml-2 col-sm-7">
+                        <input type="file" (change) = onFileChanged($event)>
+                    </div>
+                </div>
+                <div class="col-sm-3 mt-1">
+                    <button class="btn btn-outline-success centered text-center" type="button" (click)="onImageUpload()"> Upload</button>
                 </div>
             </div>
+            <div class="col-sm-2 centered text-center float-right" *ngIf="imageUploaded && authService.isAuthenticated()">
+                <a (click)="openWindowCustomClass(content)" style="cursor: pointer;">
+                    <img [src] ="domSan.bypassSecurityTrustResourceUrl(pic)" 
+                        alt="{{user.name}}" 
+                        style="max-width: 150px; max-height: 150px; border-radius: 1%;"
+                        ngbPopover="View" 
+                        triggers="mouseenter:mouseleave"
+                        placement="right">
+                </a>
+                <br><p><strong class="centered" id="name">Hello, {{user.name | uppercase}}</strong></p>
+            </div>
         </div>
-            <!-- <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-                <span aria-hidden="true">&times;</span>
-            </button> -->
-            
-    </ng-template>
-
-
+        <ng-template class="modal fade" #content let-modal>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <img class="img-responsive" [src] ="domSan.bypassSecurityTrustResourceUrl(pic)" alt="{{user.name}}" style="max-width: 400px; max-height: 400px;">
+                    </div>
+                </div>
+            </div>
+                <!-- <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+                </button> -->
+        </ng-template>
+    </div>
+</header>
+<br>
+<div class="ror" *ngIf="authService.isAuthenticated()">
+    <div class="col-sm-9">
+        <div *ngIf="authService.isAuthenticated()">
+            <ngb-alert type="custom" [dismissible]="false"><strong>Whoa! {{user.name | uppercase}}</strong> You successfully logged in now you can add your
+                <a routerLink="/todo"><strong>TO-DO</strong></a> list or your <a routerLink="/accounts"><strong>Accounts</strong></a>.
+            </ngb-alert>
+        </div>
+    </div>
 </div>
 
-
+<div *ngIf="!authService.isAuthenticated()">
+    <br>
+    <ngb-alert type="custom" [dismissible]="false"><strong>PLEASE Login</strong> or <strong>Register</strong> first to access the services. 
+    </ngb-alert>
+</div>

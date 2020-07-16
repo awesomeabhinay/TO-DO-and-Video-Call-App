@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('name', this.user.name);
           localStorage.setItem('email', this.user.email);
           localStorage.setItem('id', this.user.id);
-          
+          localStorage.setItem('about', this.user.about);
           // this.retrieveRes = result;
           // //console.log(this.retrieveRes.picByte);
           // this.retrievedImage = `data:image/(png|jpg|jpeg);base64,${this.retrieveRes.picByte}`;

@@ -69,6 +69,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
       //               'user': user};
       console.log('yaha');
       console.log(this.user);
+      this.formgroup.value.user = this.user;
       console.log(this.formgroup.value);
       this.accService.addNewAccount(this.formgroup.value).subscribe(result => {
         this.accountList.push(result);

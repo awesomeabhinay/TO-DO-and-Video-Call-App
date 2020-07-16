@@ -1,21 +1,28 @@
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { AuthServiceService } from '../auth/auth-service.service';
 import { User } from '../Model/user/user.model';
 import { HttpClient, HttpParams, HttpUserEvent } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
+import { HomePageService } from './home-page.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
+  providers: [NgbModalConfig, NgbModal]
 })
 export class HomeComponent implements OnInit {
+
+  formgroup: FormGroup;
   constructor(public authService: AuthServiceService,
-              private http: HttpClient,
-              public domSan: DomSanitizer, private modalService: NgbModal) { }
+              private http: HttpClient, private homeService: HomePageService,
+              public domSan: DomSanitizer, private modalService: NgbModal) {
+  }
   public imageUploaded = false;
+  public aboutYouUploaded = false;
   selectedFile: File;
   message: string;
   public pic: any;
@@ -43,7 +50,8 @@ export class HomeComponent implements OnInit {
         this.user.name = localStorage.getItem('name');
         this.user.email = localStorage.getItem('email');
         this.user.id = localStorage.getItem('id');
-        console.log(localStorage.getItem('pic'));
+        this.user.about = localStorage.getItem('about');
+        //console.log(localStorage.getItem('pic'));
         if (localStorage.getItem('pic') === 'data:image/(png|jpg|jpeg);base64,null' || localStorage.getItem('pic') === null) {
           console.log('kaisan ba');
           this.imageUploaded = false;
@@ -51,7 +59,19 @@ export class HomeComponent implements OnInit {
         else {
           this.imageUploaded = true;
         }
-      }, 50);
+        console.log(this.user.about);
+        if (this.user.about === 'null') {
+          this.formgroup = new FormGroup({
+            about: new FormControl('', [Validators.required])
+          });
+          console.log(this.user.about);
+          this.aboutYouUploaded = false;
+        }
+        else {
+          this.aboutYouUploaded = true;
+        }
+      }, 200);
+
     }
     console.log(this.imageUploaded);
   }
@@ -61,49 +81,60 @@ export class HomeComponent implements OnInit {
     this.user.profilePic = event.target.files[0];
   }
 
-  onUpload() {
+  onImageUpload() {
     console.log(this.user.profilePic);
-
-    //FormData API provides methods and properties to allow us easily prepare form data to be sent with POST HTTP requests.
     const uploadImageData = new FormData();
     uploadImageData.append('pic', this.user.profilePic, this.user.id);
     uploadImageData.append('id', this.user.id);
-    const uploadId = new FormData();
-    uploadId.append('id', this.user.id);
     console.log(typeof(uploadImageData));
-    //Make a call to the Spring Boot Application to save the image
-    this.http.post('http://localhost:8080/upload', uploadImageData, { observe: 'response' })
-      .subscribe((response) => {
-        if (response.status === 200) {
-          this.message = 'Image uploaded successfully';
-          this.imageUploaded = true;
-          this.userChanged.subscribe(u => this.user = u);
-        } else {
-          this.message = 'Image not uploaded successfully';
-        }
-      });
+    this.homeService.imageUpload(uploadImageData).subscribe((response) => {
+      this.imageUploaded = true;
+      this.userChanged.subscribe(u => this.user = u);
+    });
     setTimeout(() => this.getImage(), 500);
-    //this.getImage();
   }
-   getImage(){
-     this.http.get('http://localhost:8080/get/' + this.user.id)
-      .subscribe(
-        res => {
-          this.retrieveResonse = res;
-          this.base64Data = this.retrieveResonse.picByte;
-          this.retrieveImage = `data:image/(png|jpg|jpeg);base64,${this.base64Data}`;
-          this.pic = this.retrieveImage;
-          //console.log(this.pic);
-          //console.log(this.retrieveImage);
-          this.picChanged.next(this.pic);
-          this.picChanged.subscribe(p => this.pic = p);
-          console.log(this.pic);
-          localStorage.setItem('pic', this.pic);
-        }
-      );
+
+  onAboutYouUpload(){
+    if (this.formgroup.valid){
+      console.log(this.formgroup.value);
+      const newUserData = new FormGroup({
+        id: new FormControl(this.user.id, [Validators.required]),
+        name: new FormControl(this.user.name, [Validators.required]),
+        email: new FormControl(this.user.email, [Validators.required]),
+        password: new FormControl(this.user.password, [Validators.required]),
+        about: new FormControl(this.formgroup.value.about, [Validators.required])
+      });
+      console.log(newUserData.value);
+      this.homeService.aboutYouUpload(newUserData.value).subscribe(() => {
+        this.user.about = newUserData.value.about;
+        this.userChanged.subscribe(u => this.user = u);
+        this.aboutYouUploaded = true;
+        localStorage.setItem('about', this.user.about);
+      });
+    }
+  }
+  getImage(){
+    this.http.get('http://localhost:8080/get/' + this.user.id)
+    .subscribe(
+      res => {
+        this.retrieveResonse = res;
+        this.base64Data = this.retrieveResonse.picByte;
+        this.retrieveImage = `data:image/(png|jpg|jpeg);base64,${this.base64Data}`;
+        this.pic = this.retrieveImage;
+        //console.log(this.pic);
+        //console.log(this.retrieveImage);
+        this.picChanged.next(this.pic);
+        this.picChanged.subscribe(p => this.pic = p);
+        console.log(this.pic);
+        localStorage.setItem('pic', this.pic);
+      }
+    );
   }
 
   openWindowCustomClass(content) {
     this.modalService.open(content, { windowClass: 'dark-modal' });
+  }
+  open(content) {
+    this.modalService.open(content);
   }
 }

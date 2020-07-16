@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity.BodyBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -73,7 +72,7 @@ public class UserRestController {
 	
 	@PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UsersDTO> login(@Valid @RequestBody UsersDTO user){
-		if(userJpaRepository.findByEmail(user.getEmail())== null) {
+		if(userJpaRepository.findByEmail(user.getEmail())== null || userJpaRepository.findByEmailPassword(user.getEmail(), user.getPassword()) == null) {
 			logger.error("user not found");
 			return new ResponseEntity<UsersDTO>(new CustomErrors("User Not Found"),HttpStatus.NOT_FOUND);
 		}
@@ -101,6 +100,15 @@ public class UserRestController {
 		user.setPicByte(compressBytes(file.getBytes()));
 		userJpaRepository.saveAndFlush(user);
 		return new ResponseEntity<UsersDTO>(user,HttpStatus.OK);
+	}
+	
+	@PostMapping("/about")
+	public ResponseEntity<UsersDTO> uploadAboutYou(@Valid @RequestBody UsersDTO user) throws IOException {
+		System.out.println(user.getAbout());
+		UsersDTO u = ((Optional<UsersDTO>)userJpaRepository.findById(user.getId())).get();
+		u.setAbout(user.getAbout());
+		userJpaRepository.saveAndFlush(u);
+		return new ResponseEntity<UsersDTO>(u,HttpStatus.OK);
 	}
 	
 	@GetMapping("/get/{id}")

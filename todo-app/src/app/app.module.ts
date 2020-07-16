@@ -22,7 +22,8 @@ import { TodoComponent } from './todo/todo.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { TodoService } from './todo/todo.service';
 import { AccountsService } from './accounts/accounts.service';
-
+import { GalleryComponent } from './home/gallery/gallery.component';
+import { HomePageService } from './home/home-page.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,7 +32,8 @@ import { AccountsService } from './accounts/accounts.service';
     LoginComponent,
     HomeComponent,
     TodoComponent,
-    AccountsComponent
+    AccountsComponent,
+    GalleryComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +50,7 @@ import { AccountsService } from './accounts/accounts.service';
     MatCheckboxModule,
     CommonModule
   ],
-  providers: [AuthServiceService, AuthGuard, TodoService, AccountsService],
+  providers: [AuthServiceService, AuthGuard, TodoService, AccountsService, HomePageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

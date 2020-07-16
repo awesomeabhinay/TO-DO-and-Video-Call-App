@@ -20,6 +20,7 @@
         </form>
     </ng-template>
 
+    <br><br>
     <div class="row">
         <div class="col-sm-12">
             <button class="btn btn-outline-primary float-right mt-2 ml-2" (click)="open(content)">New Task</button>
@@ -34,16 +35,24 @@
              activeIds="ngb-panel-0"
              *ngFor="let todo of todoList;let i=index">
                 <ngb-panel class="mt-1">
-                    <ng-template ngbPanelTitle>
-                        <span>&#9733; <b>{{todo.title | uppercase}}</b> &#9733; 
-                            &nbsp;
-                        </span>
-                        <button class="btn btn-danger float-right"
-                                type="button"
-                                (click)="onDeleteTodo(i)"
-                                ngbPopover="Delete this Task" 
-                                triggers="mouseenter:mouseleave"
-                                placement="right"> X </button>
+                    <ng-template ngbPanelHeader>
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <button ngbPanelToggle class="btn container-fluid text-left pl-0">
+                                    &#9733; <b>{{todo.title | uppercase}}</b> &#9733; 
+                                    &nbsp;
+                                </button>
+                            </div>
+                            <div class="col-sm-2">
+                                <button class="btn btn-outline-danger float-right"
+                                    type="button"
+                                    (click)="onDeleteTodo(i)"
+                                    ngbPopover="Delete this Task" 
+                                    triggers="mouseenter:mouseleave"
+                                    placement="left"> X </button>
+                            </div>
+                        </div>
+                        
                     </ng-template>
                     <ng-template ngbPanelContent>
                         {{todo.detail | titlecase }}
