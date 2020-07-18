@@ -81,7 +81,7 @@
             </ngb-alert>
         </div>
     </div>
-    <div class="row" *ngIf="!deleteSearchedUser">
+    <div class="row" *ngIf="!deleteSearchedUser && authService.isAuthenticated()">
         <div class="col-sm-10 ml-2">
             <ngb-accordion class=""
             #acc="ngbAccordion" 
