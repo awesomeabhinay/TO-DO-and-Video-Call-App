@@ -119,6 +119,18 @@ public class UserRestController {
 		return user;
 	}
 	
+	@GetMapping("/users/{name}")
+	public ResponseEntity<List<UsersDTO>> searchUsers(@PathVariable("name") String name){
+		List<UsersDTO> users = userJpaRepository.findAllByName(name);
+		return new ResponseEntity<List<UsersDTO>>(users, HttpStatus.ACCEPTED);
+	}
+	
+	@GetMapping("/getUser/{id}")
+	public ResponseEntity<UsersDTO> getUser(@PathVariable("id") Long id){
+		UsersDTO user = ((Optional<UsersDTO>)userJpaRepository.findById(id)).get();
+		return new ResponseEntity<UsersDTO>(user, HttpStatus.OK);
+		
+	}
 	// compress the image bytes before storing it in the database
 		public static byte[] compressBytes(byte[] data) {
 			Deflater deflater = new Deflater();

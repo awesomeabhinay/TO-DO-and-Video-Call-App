@@ -72,15 +72,57 @@
     </div>
 </header>
 <br>
-<div class="ror" *ngIf="authService.isAuthenticated()">
-    <div class="col-sm-9">
-        <div *ngIf="authService.isAuthenticated()">
+<div class="container-fluid">
+    <div class="row" *ngIf="authService.isAuthenticated()">
+        
+        <div class="col-sm-9">
             <ngb-alert type="custom" [dismissible]="false"><strong>Whoa! {{user.name | uppercase}}</strong> You successfully logged in now you can add your
                 <a routerLink="/todo"><strong>TO-DO</strong></a> list or your <a routerLink="/accounts"><strong>Accounts</strong></a>.
             </ngb-alert>
         </div>
     </div>
+    <div class="row" *ngIf="!deleteSearchedUser">
+        <div class="col-sm-10 ml-2">
+            <ngb-accordion class=""
+            #acc="ngbAccordion" 
+            activeIds="ngb-panel-0">
+                <ngb-panel class="mt-1">
+                    <ng-template ngbPanelHeader>
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <button ngbPanelToggle class="btn container-fluid text-left pl-0">
+                                    &#9733; <b>{{seachedUser.name | uppercase}}</b> &#9733; 
+                                    &nbsp;
+                                </button>
+                            </div>
+                            <div class="col-sm-2">
+                                <button class="btn btn-outline-danger float-right"
+                                    type="button"
+                                    (click)="onDeleteSearchedUser()"
+                                    ngbPopover="Delete this Task" 
+                                    triggers="mouseenter:mouseleave"
+                                    placement="left"> X </button>
+                            </div>
+                        </div>
+                        
+                    </ng-template>
+                    <ng-template ngbPanelContent>
+                        <b>ID: </b>{{seachedUser.id}}<br>
+                        <b>EMAIL: </b>{{seachedUser.email}}<br>
+                        <b>ABOUT: </b>{{ seachedUser.about !== null ? seachedUser.about : 'Not Updated' | titlecase}}
+                    </ng-template>
+                </ngb-panel>
+            </ngb-accordion>
+        </div>
+    </div>
 </div>
+
+<!-- <div class="container-fluid" style="padding-left: 50px;">
+    <div class="row" *ngIf="authService.isAuthenticated()">
+        <app-searched-user></app-searched-user>
+    </div>
+</div> -->
+
 
 <div *ngIf="!authService.isAuthenticated()">
     <br>

@@ -24,6 +24,7 @@ import { TodoService } from './todo/todo.service';
 import { AccountsService } from './accounts/accounts.service';
 import { GalleryComponent } from './home/gallery/gallery.component';
 import { HomePageService } from './home/home-page.service';
+import { SearchService } from './search.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,7 +34,7 @@ import { HomePageService } from './home/home-page.service';
     HomeComponent,
     TodoComponent,
     AccountsComponent,
-    GalleryComponent
+    GalleryComponent,
   ],
   imports: [
     BrowserModule,
@@ -50,7 +51,13 @@ import { HomePageService } from './home/home-page.service';
     MatCheckboxModule,
     CommonModule
   ],
-  providers: [AuthServiceService, AuthGuard, TodoService, AccountsService, HomePageService],
+  providers: [AuthServiceService,
+     AuthGuard,
+     TodoService,
+     AccountsService,
+     HomePageService,
+     SearchService
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

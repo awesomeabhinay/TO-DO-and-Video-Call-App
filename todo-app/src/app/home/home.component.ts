@@ -7,6 +7,7 @@ import { Subject } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import { HomePageService } from './home-page.service';
+import { SearchService } from '../search.service';
 
 @Component({
   selector: 'app-home',
@@ -17,7 +18,7 @@ import { HomePageService } from './home-page.service';
 export class HomeComponent implements OnInit {
 
   formgroup: FormGroup;
-  constructor(public authService: AuthServiceService,
+  constructor(public authService: AuthServiceService, private searchService: SearchService,
               private http: HttpClient, private homeService: HomePageService,
               public domSan: DomSanitizer, private modalService: NgbModal) {
   }
@@ -35,9 +36,14 @@ export class HomeComponent implements OnInit {
   user = new User(localStorage.getItem('id'),
     localStorage.getItem('name'),
     localStorage.getItem('email'));
-
+  seachedUser: User = new User('', '', '');
+  deleteSearchedUser: boolean = true;
   ngOnInit(): void {
     if (this.authService.isAuthenticated()) {
+      this.searchService.searchedUser.subscribe(u => {
+        this.seachedUser = u;
+        this.deleteSearchedUser = false;
+      });
       // this.getImage();
       this.getImage();
       console.log('kab');
@@ -51,6 +57,7 @@ export class HomeComponent implements OnInit {
         this.user.email = localStorage.getItem('email');
         this.user.id = localStorage.getItem('id');
         this.user.about = localStorage.getItem('about');
+
         //console.log(localStorage.getItem('pic'));
         if (localStorage.getItem('pic') === 'data:image/(png|jpg|jpeg);base64,null' || localStorage.getItem('pic') === null) {
           console.log('kaisan ba');
@@ -136,5 +143,9 @@ export class HomeComponent implements OnInit {
   }
   open(content) {
     this.modalService.open(content);
+  }
+
+  onDeleteSearchedUser(){
+    this.deleteSearchedUser = true;
   }
 }

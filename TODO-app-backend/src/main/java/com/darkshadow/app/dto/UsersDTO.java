@@ -38,7 +38,7 @@ public class UsersDTO {
 	@Column(name = "password")
 	private String password;
 	
-	@Column(name = "user_pic", length = 10000000)
+	@Column(name = "user_pic", length = 1000000)
 	private byte[] picByte;
 	
 	@Column(name = "about", length = 10000)

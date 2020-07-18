@@ -27,7 +27,23 @@
                 type="button" routerLink="/login">Login</button>
       </ng-template>
       <form class="form-inline my-2 my-lg-0" *ngIf = "auth.isAuthenticated()">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search User" aria-label="Search">
+        <div ngbDropdown class="d-inline-block">
+          <input class="form-control mr-sm-2" id="search" (keyup)="search($event.target.value)" 
+                placeholder="Search User" aria-label="Search"
+                ngbDropdownToggle>
+          <div ngbDropdownMenu aria-labelledby="search">
+            <ul>
+              <li ngbDropdownItem *ngIf="len==0">Searching...</li>
+            </ul>
+            <ul *ngFor="let u of users$ | async">
+              <li ngbDropdownItem routerLink="home/{{u.id}}" style="cursor: pointer;" (click) ="clicked(u)">
+                <b>{{u.id}}</b>&nbsp; <i>{{u.name | titlecase}}</i><br>
+                <i>{{u.email}}</i>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
         <button class="btn btn-outline-success my-2 my-sm-0" type="button">Search</button>
       </form>
       <button class="btn btn-outline-danger my-2 my-sm-0 ml-2" routerLink="/home" type="button" (click)="onLogout()" *ngIf="auth.isAuthenticated()">Logout</button>
