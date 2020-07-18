@@ -36,7 +36,7 @@
               <li ngbDropdownItem *ngIf="len==0">Searching...</li>
             </ul>
             <ul *ngFor="let u of users$ | async">
-              <li ngbDropdownItem routerLink="home/{{u.id}}" style="cursor: pointer;" (click) ="clicked(u)">
+              <li ngbDropdownItem style="cursor: pointer;" (click) ="clicked(u)">
                 <b>{{u.id}}</b>&nbsp; <i>{{u.name | titlecase}}</i><br>
                 <i>{{u.email}}</i>
               </li>
