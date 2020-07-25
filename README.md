@@ -12,4 +12,7 @@ To run Angular => Go inside todo-app and build it using `npm i` after that run u
 
 To run Server => Go inside target folder of TODO-app-backend and enter `mvn install` (make sure maven is installed).
 
+To run web-socket => Go inside web-socket and build it using `npm i` after that run using `node index.js`.
+
+
 HAPPY CODING
