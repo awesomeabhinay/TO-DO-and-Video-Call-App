@@ -22,8 +22,8 @@ public class UserEmailService {
 	
 	public void sendMail(String email, String name) {
 		String to = email;
-		String from = "ccaabhi@gmail.com";
-		String password = "abhinayS1!";
+		String from = "youremail@gmail.com";
+		String password = "***********";
 		Properties props = new Properties();    
         props.put("mail.smtp.host", "smtp.gmail.com");    
         props.put("mail.smtp.socketFactory.port", "465");    
