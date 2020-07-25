@@ -8,6 +8,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import { HomePageService } from './home-page.service';
 import { SearchService } from '../search.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Notification } from '../Model/notification.model';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +22,8 @@ export class HomeComponent implements OnInit {
   formgroup: FormGroup;
   constructor(public authService: AuthServiceService, private searchService: SearchService,
               private http: HttpClient, private homeService: HomePageService,
-              public domSan: DomSanitizer, private modalService: NgbModal) {
+              public domSan: DomSanitizer, private modalService: NgbModal,
+              private router: Router, private route: ActivatedRoute) {
   }
   public imageUploaded = false;
   public aboutYouUploaded = false;
@@ -34,16 +37,25 @@ export class HomeComponent implements OnInit {
   userChanged = new Subject<User>();
 
   user = new User(localStorage.getItem('id'),
-    localStorage.getItem('name'),
-    localStorage.getItem('email'));
+                  localStorage.getItem('name'),
+                  localStorage.getItem('email'));
   seachedUser: User = new User('', '', '');
   deleteSearchedUser: boolean = true;
+  notifications: Notification[];
+  notif$ = new Subject<Notification[]>();
   ngOnInit(): void {
     if (this.authService.isAuthenticated()) {
       this.searchService.searchedUser.subscribe(u => {
         this.seachedUser = u;
         this.deleteSearchedUser = false;
       });
+
+      this.homeService.getUserNotifications(this.user.id).subscribe(notiList => {
+        this.notifications = notiList;
+        this.notif$.next(this.notifications);
+        this.notif$.subscribe(nl => this.notifications = nl);
+      });
+
       // this.getImage();
       this.getImage();
       console.log('kab');
@@ -132,10 +144,25 @@ export class HomeComponent implements OnInit {
         //console.log(this.retrieveImage);
         this.picChanged.next(this.pic);
         this.picChanged.subscribe(p => this.pic = p);
-        console.log(this.pic);
+        //console.log(this.pic);
         localStorage.setItem('pic', this.pic);
       }
     );
+  }
+
+  onVideoCall(id){
+    console.log(id);
+    const code = Math.floor(100000000 + Math.random() * 900000000);
+    console.log(code);
+    this.homeService.videoCallRequest(id, code, this.user.name).subscribe();
+    this.router.navigateByUrl('/video-call/' + code);
+  }
+
+  onDeleteNotification(id, i){
+    this.notifications.splice(i, 1);
+    this.notif$.next(this.notifications);
+    this.notif$.subscribe(nl => this.notifications = nl);
+    this.homeService.deleteNotification(id).subscribe();
   }
 
   openWindowCustomClass(content) {

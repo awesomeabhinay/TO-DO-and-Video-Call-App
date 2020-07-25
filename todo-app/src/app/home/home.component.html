@@ -74,13 +74,22 @@
 <br>
 <div class="container-fluid">
     <div class="row" *ngIf="authService.isAuthenticated()">
-        
         <div class="col-sm-9">
-            <ngb-alert type="custom" [dismissible]="false"><strong>Whoa! {{user.name | uppercase}}</strong> You successfully logged in now you can add your
+            <ngb-alert type="custom" [dismissible]="true"><strong>Whoa! {{user.name | uppercase}}</strong> You successfully logged in now you can add your
                 <a routerLink="/todo"><strong>TO-DO</strong></a> list or your <a routerLink="/accounts"><strong>Accounts</strong></a>.
             </ngb-alert>
         </div>
     </div>
+
+    <div class="row" *ngIf="authService.isAuthenticated()">
+        <div class="col-sm-9" *ngFor="let notif of notifications;let i=index">
+            <ngb-alert type="info">{{notif.senderName | titlecase}} want to make a video call with you. If You are Interested
+                <a routerLink="/video-call/{{notif.code}}" (click) = "onDeleteNotification(notif.id,i)"><strong>Click here. </strong></a>
+                If not <a (click) = "onDeleteNotification(notif.id,i)" style="cursor: pointer;"><strong>Click Here</strong></a>
+            </ngb-alert>
+        </div>
+    </div>
+
     <div class="row" *ngIf="!deleteSearchedUser && authService.isAuthenticated()">
         <div class="col-sm-10 ml-2">
             <ngb-accordion class=""
@@ -89,19 +98,34 @@
                 <ngb-panel class="mt-1">
                     <ng-template ngbPanelHeader>
                         <div class="row">
-                            <div class="col-sm-10">
+                            <div class="col-sm">
                                 <button ngbPanelToggle class="btn container-fluid text-left pl-0">
                                     &#9733; <b>{{seachedUser.name | uppercase}}</b> &#9733; 
                                     &nbsp;
                                 </button>
+                                
                             </div>
-                            <div class="col-sm-2">
+                            <div class="col-sm">
+                                <button mat-icon-button aria-label="video call icon" class = "btn btn-outline-success"
+                                        type="button"
+                                        (click) = "onVideoCall(seachedUser.id)"
+                                        ngbPopover="Video Call" 
+                                        triggers="mouseenter:mouseleave"
+                                        placement="right"
+                                        >
+                                        <mat-icon>video_call</mat-icon>
+                                </button>
+                            </div>
+                            <div class="col-sm-8">
                                 <button class="btn btn-outline-danger float-right"
                                     type="button"
                                     (click)="onDeleteSearchedUser()"
                                     ngbPopover="Delete this Task" 
                                     triggers="mouseenter:mouseleave"
-                                    placement="left"> X </button>
+                                    placement="left"
+                                    mat-icon-button> 
+                                    <mat-icon>delete</mat-icon>
+                                </button>
                             </div>
                         </div>
                         

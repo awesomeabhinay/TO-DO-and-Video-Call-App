@@ -8,6 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AppComponent } from './app.component';
@@ -25,6 +26,8 @@ import { AccountsService } from './accounts/accounts.service';
 import { GalleryComponent } from './home/gallery/gallery.component';
 import { HomePageService } from './home/home-page.service';
 import { SearchService } from './search.service';
+import { VideoCallComponent } from './video-call/video-call.component';
+import { VideoCallService } from './home/video-call.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,6 +38,7 @@ import { SearchService } from './search.service';
     TodoComponent,
     AccountsComponent,
     GalleryComponent,
+    VideoCallComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,6 +49,7 @@ import { SearchService } from './search.service';
     ReactiveFormsModule,
     HttpClientModule,
     MatCardModule,
+    MatInputModule,
     MatFormFieldModule,
     MatIconModule,
     MatToolbarModule,
@@ -56,7 +61,8 @@ import { SearchService } from './search.service';
      TodoService,
      AccountsService,
      HomePageService,
-     SearchService
+     SearchService,
+     VideoCallService
     ],
   bootstrap: [AppComponent]
 })

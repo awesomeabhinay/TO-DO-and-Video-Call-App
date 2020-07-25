@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,8 +28,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.darkshadow.app.dto.NotificationDTO;
 import com.darkshadow.app.dto.UsersDTO;
 import com.darkshadow.app.exception.CustomErrors;
+import com.darkshadow.app.repo.NotificationRepository;
 import com.darkshadow.app.repo.UserJpaRepository;
 import com.darkshadow.app.service.UserEmailService;
 
@@ -50,6 +53,9 @@ public class UserRestController {
 	
 	@Autowired
 	private UserEmailService emailService;
+	
+	@Autowired
+	private NotificationRepository notifJpaRepo;
 	
 	@GetMapping("/")
 	public ResponseEntity<List<UsersDTO>> getAllUser(){
@@ -131,43 +137,67 @@ public class UserRestController {
 		return new ResponseEntity<UsersDTO>(user, HttpStatus.OK);
 		
 	}
+	
+	@PostMapping("/videocall")
+	public void videoCallRequest(@Valid @RequestBody String data[]) {
+		System.out.println(data[0] + " " + data[1] + " " + data[2]);
+		NotificationDTO newNotif = new NotificationDTO();
+		newNotif.setCode(data[1]);
+		UsersDTO u = new UsersDTO();
+		u.setId(Long.parseLong(data[0]));
+		newNotif.setUser(u);
+		newNotif.setSenderName(data[2]);
+		notifJpaRepo.save(newNotif);
+	}
+	
+	@GetMapping("/notifications/{id}")
+	public ResponseEntity<List<NotificationDTO>> getNotifications(@PathVariable("id") String id){
+		List<NotificationDTO> notifList = notifJpaRepo.findByUserId(Long.parseLong(id));
+		return new ResponseEntity<List<NotificationDTO>>(notifList, HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/notification/{id}")
+	public ResponseEntity<NotificationDTO> deleteNotification(@PathVariable("id") Long id){
+		notifJpaRepo.deleteById(id);
+		return new ResponseEntity<NotificationDTO>(HttpStatus.NO_CONTENT);
+	}
 	// compress the image bytes before storing it in the database
-		public static byte[] compressBytes(byte[] data) {
-			Deflater deflater = new Deflater();
-			deflater.setInput(data);
-			deflater.finish();
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-			byte[] buffer = new byte[1024];
-			while (!deflater.finished()) {
-				int count = deflater.deflate(buffer);
+	public static byte[] compressBytes(byte[] data) {
+		Deflater deflater = new Deflater();
+		deflater.setInput(data);
+		deflater.finish();
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+		byte[] buffer = new byte[1024];
+		while (!deflater.finished()) {
+			int count = deflater.deflate(buffer);
+			outputStream.write(buffer, 0, count);
+		}
+		try {
+			outputStream.close();
+		} catch (IOException e) {
+		}
+		System.out.println("Compressed Image Byte Size - " + outputStream.toByteArray().length);
+		return outputStream.toByteArray();
+	}
+	// uncompress the image bytes before returning it to the angular application
+	public static byte[] decompressBytes(byte[] data) {
+		if(data == null) {
+			return null;
+		}
+		Inflater inflater = new Inflater();
+		inflater.setInput(data);
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+		byte[] buffer = new byte[1024];
+		try {
+			while (!inflater.finished()) {
+				int count = inflater.inflate(buffer);
 				outputStream.write(buffer, 0, count);
 			}
-			try {
-				outputStream.close();
-			} catch (IOException e) {
-			}
-			System.out.println("Compressed Image Byte Size - " + outputStream.toByteArray().length);
-			return outputStream.toByteArray();
+			outputStream.close();
+		} catch (IOException ioe) {
+		} catch (DataFormatException e) {
 		}
-		// uncompress the image bytes before returning it to the angular application
-		public static byte[] decompressBytes(byte[] data) {
-			if(data == null) {
-				return null;
-			}
-			Inflater inflater = new Inflater();
-			inflater.setInput(data);
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-			byte[] buffer = new byte[1024];
-			try {
-				while (!inflater.finished()) {
-					int count = inflater.inflate(buffer);
-					outputStream.write(buffer, 0, count);
-				}
-				outputStream.close();
-			} catch (IOException ioe) {
-			} catch (DataFormatException e) {
-			}
-			return outputStream.toByteArray();
-		}
+		return outputStream.toByteArray();
+	}
 	
 }

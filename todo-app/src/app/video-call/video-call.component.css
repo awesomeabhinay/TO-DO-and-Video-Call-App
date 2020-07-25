@@ -1,0 +1,11 @@
+#start {
+  margin:auto;
+  padding-left: 40%;
+  padding-top: 10%;
+}
+
+#self-view-container{
+  position: absolute;
+    left: 700px;
+    display: block;
+}

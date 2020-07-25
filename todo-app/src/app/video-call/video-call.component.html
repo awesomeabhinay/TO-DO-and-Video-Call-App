@@ -1,0 +1,29 @@
+<br><br>
+<div class="container-fluid">
+  <div class="row">
+    <div id="chat-room" style="display: none;">
+      <video id="remote-view" autoplay #video2 allowfullscreen></video>
+      <div id="self-view-container">
+        <video id="self-view" autoplay #video1></video>
+      </div>
+      <br>
+    </div>
+  </div>
+  <div class="row">
+    <button *ngIf="connected" class="btn btn-outline-danger ml-4 mt-2" id="stop" 
+          (click)="endCall();" 
+          type="button" 
+          style="margin-left: 450px;"
+          routerLink="/home"> End Call</button>
+  </div>
+  <div id="start">
+    <mat-form-field appearance="fill">
+      <mat-label>Input</mat-label>
+      <input matInput id="code-input" placeholder="Enter your code" [(ngModel)] = "codeInput" />
+    </mat-form-field>
+    <br>
+    <button class="btn btn-outline-primary" id="start-button"
+            [disabled]="codeInput.length < 9">
+            Start Video Chat</button>
+  </div>
+</div>

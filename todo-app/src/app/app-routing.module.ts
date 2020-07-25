@@ -5,6 +5,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { HomeComponent } from './home/home.component';
 import { TodoComponent } from './todo/todo.component';
 import { AccountsComponent } from './accounts/accounts.component';
+import { VideoCallComponent } from './video-call/video-call.component';
 
 
 const routes: Routes = [
@@ -13,7 +14,8 @@ const routes: Routes = [
   {path: 'register', component: RegisterComponent},
   {path: 'login', component: LoginComponent},
   {path: 'todo', component: TodoComponent},
-  {path: 'accounts', component: AccountsComponent}
+  {path: 'accounts', component: AccountsComponent},
+  {path: 'video-call/:id', component: VideoCallComponent}
 ];
 
 @NgModule({
