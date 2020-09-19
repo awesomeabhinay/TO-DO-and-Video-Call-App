@@ -2,7 +2,7 @@
 
 This is an Angular 9 and Java Spring Boot project. So here you can register using your unique email id and then you will get an otp to verify your account and then you can login :).
 
-You can add your to-do list and your private accounts after you you logged in and also search other user how have registered successfully.
+You can add your to-do list and your private accounts after you you logged in and also search other user and made a # VIDEO # CALL how have registered successfully.
 
 # How to run
 
